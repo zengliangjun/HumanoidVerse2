@@ -169,6 +169,27 @@ class AsapRobotDataEvaluater(AsapRobotData):
     def next_task(self):
         self.motion_warp.next_task()
 
+    def draw_debug_vis(self):
+        robotdata_manager = self
+        if not hasattr(robotdata_manager, "current_motion_ref"):
+            return
+
+        ref_body_pos = robotdata_manager.current_motion_ref["rg_pos_t"]
+        ref_body_pos = ref_body_pos.reshape(self.num_envs, -1, 3)
+
+        for env_id in range(self.num_envs):
+
+            # draw marker joints
+            for pos_id, pos_joint in enumerate(ref_body_pos[env_id]): # idx 0 torso (duplicate with 11)
+                if self.config.robot.motion.visualization.customize_color:
+                    _id = pos_id % len(self.config.robot.motion.visualization.marker_joint_colors)
+                    color_inner = self.config.robot.motion.visualization.marker_joint_colors[_id]
+                else:
+                    color_inner = (0.3, 0.3, 0.3)
+                color_inner = tuple(color_inner)
+
+                self.task.simulator.draw_sphere(pos_joint, 0.04, color_inner, env_id, pos_id)
+
 
 class AsapRobotDataPlayer(AsapRobotDataEvaluater):
     def __init__(self, _task):
