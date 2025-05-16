@@ -2,6 +2,7 @@ from humanoidverse.envs.base_task.term import base
 import torch
 from motion_lib.aosp import motion_lib_robot
 from loguru import logger
+import numpy as np
 
 
 class AsapMotion(base.BaseManager):
@@ -76,7 +77,7 @@ class AsapMotion(base.BaseManager):
         return (episode_manager.episode_length_buf + 1) * self.task.dt + self.motion_start_times # next frames so +1
 
 
-class AsapMotionEvaluater(base.BaseManager):
+class AsapMotionEvaluater(AsapMotion):
     def __init__(self, _task):
         super(AsapMotionEvaluater, self).__init__(_task)
 

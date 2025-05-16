@@ -179,12 +179,12 @@ class AsapRobotDataPlayer(AsapRobotDataEvaluater):
         if hasattr(self, 'current_motion_ref'):
             _motion_ref = self.current_motion_ref
         else:
-            _motion_ref = self.motion_warp._motion_ref
+            _motion_ref = self.motion_warp.motion_ref
 
         ## stage 2
         self._reset_dofs(env_ids, _motion_ref)
         self._reset_root_states(env_ids, _motion_ref)
-        self.next_motion_ref = self._next_motion_ref
+        self.next_motion_ref = self.motion_warp.next_motion_ref
 
         ## for debug
         #_ref_motion_length = self.motion_warp.motion_len
