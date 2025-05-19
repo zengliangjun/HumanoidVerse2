@@ -41,11 +41,6 @@ class MotionfarCurrculum(base.BaseManager):
 
         if not hasattr(self.task, 'asap_termination'):
             return
-        asap_termination = self.task.asap_termination
-        # TODO
-        #if not hasattr(asap_termination, 'reset_buf_motion_far'):
-        #    return
-        #logger.info(f"terminate {asap_termination.reset_buf_motion_far}")
 
         if episode_manager.average_episode_length < self.config.termination_curriculum.terminate_when_motion_far_curriculum_level_down_threshold:
             self.terminate_when_motion_far_threshold *= (1 + self.config.termination_curriculum.terminate_when_motion_far_curriculum_degree)
@@ -55,8 +50,8 @@ class MotionfarCurrculum(base.BaseManager):
         self.terminate_when_motion_far_threshold = np.clip(self.terminate_when_motion_far_threshold,
                                                          self.config.termination_curriculum.terminate_when_motion_far_threshold_min,
                                                          self.config.termination_curriculum.terminate_when_motion_far_threshold_max)
-        
-        asap_termination.terminate_when_motion_far_threshold = self.terminate_when_motion_far_threshold
+
+        self.task.asap_termination.terminate_when_motion_far_threshold = self.terminate_when_motion_far_threshold
 
     def post_compute(self):
         if not self.config.termination.terminate_when_motion_far or \
