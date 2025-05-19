@@ -21,7 +21,7 @@ class CtrlDelayManager(base.BaseManager):
 
     def pre_physics_step(self, actions):
         if self.config.domain_rand.randomize_ctrl_delay:
-            self.action_queue[:, 1:] = self.action_queue[:, :-1]
+            self.action_queue[:, 1:] = self.action_queue[:, :-1].clone()
             self.action_queue[:, 0] = actions
             _actions_after_delay = self.action_queue[torch.arange(self.num_envs), self.action_delay_idx].clone()
         else:

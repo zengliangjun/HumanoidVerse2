@@ -116,6 +116,7 @@ class RandResetDataManager(BaseRobotDataManager):
         # base position
         terrain_manager = self.task.terrain_manager
         if terrain_manager.custom_origins:
+            terrain_manager.compute_reset_origins(env_ids)
             self.task.simulator.robot_root_states[env_ids] = self.base_init_state
             self.task.simulator.robot_root_states[env_ids, :3] += terrain_manager.env_origins[env_ids]
             self.task.simulator.robot_root_states[env_ids, :2] += torch_rand_float(-1., 1., (len(env_ids), 2), device=str(self.device)) # xy position within 1m of the center

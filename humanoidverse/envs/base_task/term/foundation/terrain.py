@@ -41,3 +41,41 @@ class BaseTerrainManager(base.BaseManager):
             self.env_origins[:, 0] = spacing * xx.flatten()[:self.num_envs]
             self.env_origins[:, 1] = spacing * yy.flatten()[:self.num_envs]
             self.env_origins[:, 2] = 0.
+
+    ## called by robotdata.py  RandResetDataManager
+    def compute_reset_origins(self, env_ids):
+        if 0 == len(env_ids) or \
+           not self.custom_origins or \
+           not self.config.terrain.curriculum:
+            return
+
+        commands = self.task.command_manager.commands
+        # compute the distance the robot walked
+        distance = torch.norm(self.task.simulator.robot_root_states[env_ids, :2] - self.env_origins[env_ids, :2], dim=1)
+        # robots that walked far enough progress to harder terrains
+        move_up = distance > self.config.terrain.terrain_length / 2
+        # robots that walked less than half of their required distance go to simpler terrains
+        move_down = distance < torch.norm(commands[env_ids, :2], dim=1) * self.config.max_episode_length_s * 0.5
+        move_down *= ~move_up
+        # update terrain levels
+
+        # update terrain level for the envs
+        self.terrain_levels[env_ids] += 1 * move_up - 1 * move_down
+        # robots that solve the last level are sent to a random one
+        # the minimum level is zero
+        self.terrain_levels[env_ids] = torch.where(
+            self.terrain_levels[env_ids] >= self.max_terrain_level,
+            torch.randint_like(self.terrain_levels[env_ids], self.max_terrain_level),
+            torch.clip(self.terrain_levels[env_ids], 0),
+        )
+        # update the env origins
+        self.env_origins[env_ids] = self.terrain_origins[self.terrain_levels[env_ids], self.terrain_types[env_ids]]
+
+    def post_compute(self):
+        if not self.custom_origins or \
+           not self.config.terrain.curriculum:
+            return
+
+        assert hasattr(self.task, "extras_manager")
+        extras_manager = self.task.extras_manager
+        extras_manager.log_dict["terrain_levels"] = self.terrain_levels.float()
