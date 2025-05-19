@@ -74,4 +74,4 @@ class TerrainStatus(base.BaseManager):
             heights = torch.min(heights, heights3)
 
             robotstatus_manager.env_terrain_heights = heights.view(self.config.num_envs, -1) * cfg.vertical_scale
-            logger.info(f">>>>>>>>>>>>>>>{type(robotstatus_manager)}")
+
