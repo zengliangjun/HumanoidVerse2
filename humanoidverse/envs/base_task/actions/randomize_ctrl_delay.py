@@ -4,6 +4,7 @@ import torch
 class CtrlDelayManager(base.BaseManager):
     def __init__(self, _task):
         super(CtrlDelayManager, self).__init__(_task)
+        self.dim_actions = self.task.config.robot.actions_dim
 
     # stage 1
     def init(self):

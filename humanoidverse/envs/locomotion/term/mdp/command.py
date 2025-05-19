@@ -29,7 +29,7 @@ class VelocityCommand(base.BaseManager):
         robotdata_manager = self.task.robotdata_manager
         robotstatus_manager = self.task.robotstatus_manager
 
-        if not self.task.is_evaluating:
+        if True: #not self.task.is_evaluating:
             env_ids = (episode_manager.episode_length_buf % \
                        int(self.config.locomotion_command_resampling_time / self.task.dt)==0).nonzero(as_tuple=False).flatten()
             self._resample(env_ids)

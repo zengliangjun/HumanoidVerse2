@@ -337,14 +337,33 @@ HYDRA_FULL_ERROR=1 python humanoidverse/train_agent.py \
 +terrain=terrain_locomotion_plane \
 +obs=loco/leggedloco_obs_singlestep_withlinvel \
 num_envs=4096 \
-project_name=TestIsaacGymInstallation \
-experiment_name=G123dof_loco \
+project_name=Locomotion \
+experiment_name=G123dof_loco_plane \
 headless=True \
 rewards.reward_penalty_curriculum=True \
 rewards.reward_initial_penalty_scale=0.1 \
 rewards.reward_penalty_degree=0.00003
 ```
-  
+
+```bash
+HYDRA_FULL_ERROR=1 python humanoidverse/train_agent.py \
++simulator=isaacgym \
++exp=locomotion \
++domain_rand=domain_rand_base \
++rewards=loco/reward_g1_locomotion \
++robot=g1/g1_29dof_anneal_23dof \
++terrain=terrain_locomotion \
++obs=loco/leggedloco_obs_singlestep_withlinvel \
+num_envs=4096 \
+project_name=Locomotion \
+experiment_name=G123dof_loco \
+headless=True \
+rewards.reward_penalty_curriculum=True \
+rewards.reward_initial_penalty_scale=0.1 \
+rewards.reward_penalty_degree=0.00003
++checkpoint=logs/Locomotion/isaacgym/20250517_124306-G123dof_loco_plane-locomotion-g1_29dof_anneal_23dof/model_26000.pt
+```
+
 g1 asap train  
   
 
