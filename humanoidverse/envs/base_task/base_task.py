@@ -29,30 +29,37 @@ class BaseTask():
         # init 2
         ## instance manager
         self._setup_manager()
+        logger.info('instance manager')
 
         ## load assets
         self.simulator.load_assets()
+        logger.info('load_assets')
 
         # init 3
         ## pre init
         self._pre_init()
+        logger.info('_pre_init')
 
         # init 4
         # create envs, sim and viewer
         self._create_envs()
+        logger.info('_create_envs')
 
         self.simulator.prepare_sim()
         if self.headless == False:
             self.simulator.setup_viewer()
 
+        logger.info('prepare_sim')
         # init 5
         ## init
         self._init()
 
+        logger.info('init')
         # init 6
         ## post init
         self._post_init()
         self.init_done = True
+        logger.info('post_init')
 
     # step
     def step(self, actor_state):
@@ -194,7 +201,8 @@ class BaseTask():
 
     # init 4
     def _pre_init(self):
-        for _manager in self.managers.values():
+        for _name,_manager in self.managers.items():
+            logger.info(f'pre_init {_name}')
             _manager.pre_init()
 
     # init 5

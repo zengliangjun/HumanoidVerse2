@@ -1,12 +1,14 @@
 from humanoidverse.utils.torch_utils import to_torch, get_axis_params, quat_rotate_inverse
 from isaac_utils.rotations import get_euler_xyz_in_tensor
 from humanoidverse.envs.base_task.term import base
+from humanoidverse.envs.base_task.term.status import terrain_height
 import torch
 
 class StatusManager(base.BaseManager):
 
     def __init__(self, _task):
         super(StatusManager, self).__init__(_task)
+        self.terrain_status = terrain_height.TerrainStatus(_task)
 
     # stage 1
     def init(self):
@@ -23,6 +25,8 @@ class StatusManager(base.BaseManager):
         self.last_dof_vel = torch.zeros_like(self.task.simulator.dof_vel)
         self.last_root_vel = torch.zeros_like(self.task.simulator.robot_root_states[:, 7:13])
 
+        self.terrain_status.init()
+
     # stage 3
     def pre_compute(self):
         # prepare quantities
@@ -33,6 +37,8 @@ class StatusManager(base.BaseManager):
         self.base_ang_vel[:] = quat_rotate_inverse(self.base_quat, self.task.simulator.robot_root_states[:, 10:13])
         # print("self.base_ang_vel", self.base_ang_vel)
         self.projected_gravity[:] = quat_rotate_inverse(self.base_quat, self.gravity_vec)
+
+        self.terrain_status.pre_compute()
 
     def reset(self, env_ids):
         if len(env_ids) == 0:

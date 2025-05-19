@@ -5,6 +5,7 @@ from humanoidverse.envs.base_task.term import base
 class BaseTerrainManager(base.BaseManager):
     def __init__(self, _task):
         super(BaseTerrainManager, self).__init__(_task)
+        self.hasinit_reset = False
 
     def pre_init(self):
         """
@@ -47,6 +48,10 @@ class BaseTerrainManager(base.BaseManager):
         if 0 == len(env_ids) or \
            not self.custom_origins or \
            not self.config.terrain.curriculum:
+            return
+
+        if not self.hasinit_reset:
+            self.hasinit_reset = True
             return
 
         commands = self.task.command_manager.commands

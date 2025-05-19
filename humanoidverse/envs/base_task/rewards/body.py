@@ -1,7 +1,7 @@
 import torch
 from humanoidverse.envs.base_task.term import base
 from humanoidverse.utils.torch_utils import quat_rotate_inverse
-
+from loguru import logger
 class BodyRewards(base.BaseManager):
     def __init__(self, _task):
         super(BodyRewards, self).__init__(_task)
@@ -27,7 +27,14 @@ class BodyRewards(base.BaseManager):
     def _reward_base_height(self):
         # Penalize base height away from target
         base_height = self.task.simulator.robot_root_states[:, 2]
-        return torch.square(base_height - self.config.rewards.desired_base_height)
+        _terrain_heights = 0
+
+        ## env heights
+        _robotstatus_manager = self.task.robotstatus_manager
+        if hasattr(_robotstatus_manager, 'env_terrain_heights'):
+            _terrain_heights = torch.mean(_robotstatus_manager.env_terrain_heights, dim = -1)
+
+        return torch.square(base_height - self.config.rewards.desired_base_height - _terrain_heights)
 
     def _reward_penalty_hip_pos(self):
         # TODO

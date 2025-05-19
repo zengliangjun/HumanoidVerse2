@@ -14,12 +14,12 @@ terrain:
   dynamic_friction: 1.0
   restitution: 0.0
   # rough terrain only:
-  measure_heights : False # keep it False
-  measured_points_x : [ 0.] # 1mx1.6m rectangle (without center line)
-  measured_points_y : [ 0.]
+  measure_heights : True # keep it False
+  measured_points_x : [-0.3, -0.2, -0.1, 0., 0.1, 0.2, 0.3,] # 1mx1.6m rectangle (without center line)
+  measured_points_y : [-0.3, -0.2, -0.1, 0., 0.1, 0.2, 0.3,]
   selected : False # select a unique terrain type and pass all arguments
   terrain_kwargs : null # Dict of arguments for selected terrain
-  max_init_terrain_level : 9 # starting curriculum state
+  max_init_terrain_level : 5 # starting curriculum state
   terrain_length : 4.
   terrain_width : 4.
   num_rows: 5 # number of terrain rows (levels)
