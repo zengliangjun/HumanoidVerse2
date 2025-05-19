@@ -10,6 +10,7 @@ rewards:
   reward_scales:
       tracking_lin_vel: 1.0
       tracking_ang_vel: 0.5
+      walk_symmetry: 0.1
       penalty_lin_vel_z: -2.0
       penalty_ang_vel_xy: -1.0
       penalty_orientation: -1.0

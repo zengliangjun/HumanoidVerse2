@@ -147,3 +147,18 @@ class FeetRewards(base.BaseManager):
         feet_height = self.task.simulator._rigid_body_pos[:, robotdata_manager.feet_indices, 2]
         height_error = torch.square(feet_height - self.config.rewards.feet_height_target) * ~contact
         return torch.sum(height_error, dim=(1))
+
+    ## feet swing height
+    def _reward_walk_symmetry(self):
+        robotdata_manager = self.task.robotdata_manager
+        _diff = self.task.simulator.dof_pos - robotdata_manager.default_dof_pos
+
+        _left = _diff[:, [0, 3]]
+        _right = _diff[:, [6, 9]]
+
+        _total = torch.mean(torch.abs(_left + _right))
+        _left = torch.abs(torch.sum(_left, dim = -1))
+        _right = torch.abs(torch.sum(_right, dim = -1))
+
+        _mean = (_left + _right + _total)
+        return torch.exp(-_mean)

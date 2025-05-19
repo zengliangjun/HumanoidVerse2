@@ -97,7 +97,8 @@ def main(
                     ]
                 elif "base_eval" == config_name:
                     args.overrides = [
-                        '+checkpoint=logs/ASAP/isaacgym/20250416_082938-MotionTracking_CR7-motion_tracking-g1_29dof_anneal_23dof/model_36600.pt'
+                        '+rewards=loco/reward_g1_locomotion',
+                        '+checkpoint=logs/Locomotion/isaacgym/20250517_124306-G123dof_loco_plane-locomotion-g1_29dof_anneal_23dof/model_26000.pt'
                     ]
                 else:
                     args.overrides = [
