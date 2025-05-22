@@ -35,6 +35,7 @@ class BaseEpisode(base.BaseManager):
         # it will reset to 0
         self.episode_length_buf += 1
         # keep status for later calcute
+        self.reset_manager.pre_step()
 
     def compute_reset(self):
         super(BaseEpisode, self).compute_reset()
@@ -66,6 +67,9 @@ class BaseEpisode(base.BaseManager):
     @property
     def reset_env_ids(self):
         return self.reset_buf.nonzero(as_tuple=False).flatten()
+
+    def post_compute(self):
+        self.reset_manager.post_compute()
 
     ## called by agents
     def rand_episode_length(self):

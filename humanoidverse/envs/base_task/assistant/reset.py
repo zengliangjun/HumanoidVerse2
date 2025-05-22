@@ -12,28 +12,42 @@ is episode manager's member.
 class Reset(base.BaseManager):
     def __init__(self, _task):
         super(Reset, self).__init__(_task)
+        self.reset_status = {}
 
     # stage 1
     def init(self):
         super(Reset, self).pre_init()
         self._collect_compute_reset()
 
+    def pre_compute(self):
+        self.reset_status.clear()
+
+
     def compute_reset(self):
         episode_manager = self.task.episode_manager
         # termination
-        for _termination in self.check_termination_dict.values():
+        for _key, _termination in self.check_termination_dict.items():
             _reset = _termination()
             if _reset is None:
                 continue
+
+            self.reset_status[_key] = torch.sum(_reset.float())
             episode_manager.termination_buf |= _reset
 
         # time_out
-        for _time_out in self.check_time_out_dict.values():
+        for _key, _time_out in self.check_time_out_dict.items():
             _reset = _time_out()
             if _reset is None:
                 continue
+            self.reset_status[_key] = torch.sum(_reset.float())
             episode_manager.time_out_buf |= _reset
 
+    def post_compute(self):
+        assert hasattr(self.task, "extras_manager")
+        extras_manager = self.task.extras_manager
+
+        for _key, _value in self.reset_status.items():
+            extras_manager.log_dict[_key] = _value
 
     def _collect_compute_reset(self):
         ## callect termination
