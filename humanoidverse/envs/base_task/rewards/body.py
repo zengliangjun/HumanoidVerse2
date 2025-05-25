@@ -27,14 +27,13 @@ class BodyRewards(base.BaseManager):
     def _reward_base_height(self):
         # Penalize base height away from target
         base_height = self.task.simulator.robot_root_states[:, 2]
-        _terrain_heights = 0
 
-        ## env heights
-        _robotstatus_manager = self.task.robotstatus_manager
-        if hasattr(_robotstatus_manager, 'env_terrain_heights'):
-            _terrain_heights = torch.mean(_robotstatus_manager.env_terrain_heights, dim = -1)
+        robotdata_manager = self.task.robotdata_manager
+        _feet_height = self.task.simulator._rigid_body_pos[:, robotdata_manager.feet_indices, 2]
+        _feet_height = torch.min(_feet_height, dim= -1)[0]
+        _height = torch.abs(base_height - _feet_height)
 
-        return torch.square(base_height - self.config.rewards.desired_base_height - _terrain_heights)
+        return torch.square(_height - self.config.rewards.desired_base_height)
 
     def _reward_penalty_hip_pos(self):
         # TODO

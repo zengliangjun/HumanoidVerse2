@@ -8,7 +8,7 @@ class StatusManager(base.BaseManager):
 
     def __init__(self, _task):
         super(StatusManager, self).__init__(_task)
-        self.terrain_status = terrain_height.TerrainStatus(_task)
+        #self.terrain_status = terrain_height.TerrainStatus(_task)
 
     # stage 1
     def init(self):
@@ -25,7 +25,7 @@ class StatusManager(base.BaseManager):
         self.last_dof_vel = torch.zeros_like(self.task.simulator.dof_vel)
         self.last_root_vel = torch.zeros_like(self.task.simulator.robot_root_states[:, 7:13])
 
-        self.terrain_status.init()
+        #self.terrain_status.init()
 
     # stage 3
     def pre_compute(self):
@@ -38,7 +38,7 @@ class StatusManager(base.BaseManager):
         # print("self.base_ang_vel", self.base_ang_vel)
         self.projected_gravity[:] = quat_rotate_inverse(self.base_quat, self.gravity_vec)
 
-        self.terrain_status.pre_compute()
+        #self.terrain_status.pre_compute()
 
     def reset(self, env_ids):
         if len(env_ids) == 0:
