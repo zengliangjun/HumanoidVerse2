@@ -20,7 +20,7 @@ class BaseTerrainManager(base.BaseManager):
             self.env_origins = torch.zeros(self.num_envs, 3, device=self.device, requires_grad=False)
             # put robots at the origins defined by the terrain
             max_init_level = self.config.terrain.max_init_terrain_level
-            if not self.config.terrain.curriculum: max_init_level = self.config.terrain.num_rows - 1
+            max_init_level = self.config.terrain.num_rows - 1
             self.terrain_levels = torch.randint(0, max_init_level+1, (self.num_envs,), device=self.device)
             self.terrain_types = torch.div(torch.arange(self.num_envs, device=self.device), (self.num_envs/self.config.terrain.num_cols), rounding_mode='floor').to(torch.long)
             self.max_terrain_level = self.config.terrain.num_rows
